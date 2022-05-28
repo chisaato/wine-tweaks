@@ -93,6 +93,21 @@ func main() {
 						xproto.UnmapWindow(X, event.Window)
 					}
 				}
+				if len(wmClassName) == 0 {
+					fmt.Println("检测到可能是网易云音乐")
+					// 2s
+					atomWindowType := registerAtom(X, "WM_CLIENT_MACHINE")
+					windowTypeCookie := xproto.GetProperty(X, false, event.Window, atomWindowType, xproto.GetPropertyTypeAny, 0, (1<<32)-1)
+					windowTypeReply, err := windowTypeCookie.Reply()
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+					if windowTypeReply.Value != nil {
+						//netWmName = strings.TrimSuffix(netWmName, "\x00")
+						fmt.Println(windowTypeReply.Value)
+					}
+				}
 
 			}
 		}

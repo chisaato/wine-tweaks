@@ -68,12 +68,12 @@ fn main() -> xcb::Result<()> {
                     property: atoms.wm_class,
                     r#type: x::ATOM_STRING,
                     long_offset: 0,
-                    long_length: 32,
+                    long_length: 1024,
                 });
                 let reply = conn.wait_for_reply(cookie)?;
-                println!("Got");
+                // 处理 reply 出错
                 println!("{:#?}", reply);
-                // let title = std::str::from_utf8(reply.unwrap().value()).expect("The WM_NAME property is not valid UTF-8");
+                let title = std::str::from_utf8(reply.value()).expect("The WM_NAME property is not valid UTF-8");
                 // println!("{}", title);
             }
             // xcb::Event::X(x::Event::MapRequest(ev)) => {
