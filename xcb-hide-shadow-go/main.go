@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/BurntSushi/xgb"
 	"github.com/BurntSushi/xgb/xproto"
-	"strconv"
 	"strings"
 )
 
@@ -65,7 +64,7 @@ func main() {
 					// 只打印一半字符串
 					wmClassName = string(wmClassReply.Value[:len(wmClassReply.Value)/2])
 					wmClassName = strings.TrimSuffix(wmClassName, "\x00")
-					fmt.Println("WM_CLASS: " + wmClassName)
+					//fmt.Println("WM_CLASS: " + wmClassName)
 				}
 				netWmNameCookie := xproto.GetProperty(X, false, event.Window, atomNetWmName, atomUtf8String, 0, (1<<32)-1)
 				netWmNameReply, err := netWmNameCookie.Reply()
@@ -77,7 +76,7 @@ func main() {
 				if netWmNameReply.Value != nil {
 					netWmName = string(netWmNameReply.Value)
 					netWmName = strings.TrimSuffix(netWmName, "\x00")
-					fmt.Println("_NET_WM_NAME: " + netWmName + "长度：" + strconv.Itoa(len(netWmName)))
+					//fmt.Println("_NET_WM_NAME: " + netWmName + "长度：" + strconv.Itoa(len(netWmName)))
 				}
 				// 这里开始处理这些古怪的窗口,未来考虑拆分代码
 				if wmClassName == "wechat.exe" {
