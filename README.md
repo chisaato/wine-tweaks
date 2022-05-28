@@ -194,4 +194,6 @@ WM_CLASS(STRING) = "cloudmusic.exe", "cloudmusic.exe"
 WM_PROTOCOLS(ATOM): protocols  WM_DELETE_WINDOW, _NET_WM_PING, WM_TAKE_FOCUS
 ```
 
-不知道在启动wine的时候强制WM_CLASS是否有效?
+不知道在启动 wine 的时候强制 WM_CLASS 是否有效?
+
+如果挂钩切换焦点的事件则可以抓到 WM_CLASS 暂定为下一步的研究方向

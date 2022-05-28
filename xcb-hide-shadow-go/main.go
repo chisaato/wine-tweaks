@@ -39,7 +39,41 @@ func main() {
 			//fmt.Println("Event:", ev)
 			switch ev.(type) {
 			case xproto.ConfigureNotifyEvent:
-				//fmt.Println("ConfigureNotifyEvent")
+				//fmt.Println("ConfigureNotifyEvent", ev)
+				//fmt.Println("发生窗口焦点切换")
+				event := ev.(xproto.ConfigureNotifyEvent)
+				wmClassCookie := xproto.GetProperty(X, false, event.Window, xproto.AtomWmClass, xproto.AtomString, 0, (1<<32)-1)
+				wmClassReply, err := wmClassCookie.Reply()
+				if err != nil {
+					// BadWindow 就别看了
+					//fmt.Println(err)
+					return
+				}
+				var wmClassName string
+				if wmClassReply.Value != nil {
+					// 只打印一半字符串
+					wmClassName = string(wmClassReply.Value[:len(wmClassReply.Value)/2])
+					wmClassName = strings.TrimSuffix(wmClassName, "\x00")
+					fmt.Println("WM_CLASS: " + wmClassName)
+				}
+				atomWindowType := registerAtom(X, "WM_ICON_NAME")
+				windowTypeCookie := xproto.GetProperty(X, false, event.Window, atomWindowType, xproto.GetPropertyTypeAny, 0, (1<<32)-1)
+				windowTypeReply, err := windowTypeCookie.Reply()
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+				if windowTypeReply.Value != nil {
+					//netWmName = strings.TrimSuffix(netWmName, "\x00")
+					fmt.Println(windowTypeReply.Value)
+					fmt.Println(string(windowTypeReply.Value))
+					if len(windowTypeReply.Value) > 0 {
+						// 说明是那些透明边框,关闭
+						fmt.Println("是透明边框")
+						//xproto.UnmapWindow(X, event.Window)
+						xproto.DestroyWindow(X, event.Window)
+					}
+				}
 			case xproto.DestroyNotifyEvent:
 				//fmt.Println("DestroyNotifyEvent")
 			case xproto.MapRequestEvent:
@@ -94,18 +128,18 @@ func main() {
 					}
 				}
 				if len(wmClassName) == 0 {
-					fmt.Println("检测到可能是网易云音乐")
+					//fmt.Println("检测到可能是网易云音乐")
 					// 2s
 					atomWindowType := registerAtom(X, "WM_CLIENT_MACHINE")
 					windowTypeCookie := xproto.GetProperty(X, false, event.Window, atomWindowType, xproto.GetPropertyTypeAny, 0, (1<<32)-1)
 					windowTypeReply, err := windowTypeCookie.Reply()
 					if err != nil {
-						fmt.Println(err)
+						//fmt.Println(err)
 						continue
 					}
 					if windowTypeReply.Value != nil {
 						//netWmName = strings.TrimSuffix(netWmName, "\x00")
-						fmt.Println(windowTypeReply.Value)
+						//fmt.Println(windowTypeReply.Value)
 					}
 				}
 
