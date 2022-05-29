@@ -23,6 +23,12 @@
 
 虽然这种方式很 Hack,也不优雅,但是作为一个技术实现已经足够了.未来可以考虑加入更多判定.
 
+构建方式
+
+```bash
+CGO_ENABLED=0 go build -ldflags "-s -w" .
+```
+
 ## xcb-hide-shadow-rs
 
 同上,但是用 Rust 实现.

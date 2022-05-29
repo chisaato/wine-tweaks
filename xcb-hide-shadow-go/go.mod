@@ -1,4 +1,4 @@
-module xcb
+module xcb-hide-shadow
 
 go 1.18
 
