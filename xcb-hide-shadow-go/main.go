@@ -24,8 +24,6 @@ func main() {
 	root := setup.DefaultScreen(X).Root
 	xproto.ChangeWindowAttributes(X, root, xproto.CwEventMask, []uint32{xproto.EventMaskSubstructureNotify | xproto.EventMaskStructureNotify})
 	// 注册自己的 Atom
-	atomNetWmName := registerAtom(X, "_NET_WM_NAME")
-	atomUtf8String := registerAtom(X, "UTF8_STRING")
 
 	//atomNetActiveWindow := registerAtom(X, "_NET_ACTIVE_WINDOW")
 	for {
@@ -41,39 +39,45 @@ func main() {
 			case xproto.ConfigureNotifyEvent:
 				//fmt.Println("ConfigureNotifyEvent", ev)
 				//fmt.Println("发生窗口焦点切换")
-				event := ev.(xproto.ConfigureNotifyEvent)
-				wmClassCookie := xproto.GetProperty(X, false, event.Window, xproto.AtomWmClass, xproto.AtomString, 0, (1<<32)-1)
-				wmClassReply, err := wmClassCookie.Reply()
-				if err != nil {
-					// BadWindow 就别看了
-					//fmt.Println(err)
-					return
-				}
-				var wmClassName string
-				if wmClassReply.Value != nil {
-					// 只打印一半字符串
-					wmClassName = string(wmClassReply.Value[:len(wmClassReply.Value)/2])
-					wmClassName = strings.TrimSuffix(wmClassName, "\x00")
-					fmt.Println("WM_CLASS: " + wmClassName)
-				}
-				atomWindowType := registerAtom(X, "WM_ICON_NAME")
-				windowTypeCookie := xproto.GetProperty(X, false, event.Window, atomWindowType, xproto.GetPropertyTypeAny, 0, (1<<32)-1)
-				windowTypeReply, err := windowTypeCookie.Reply()
-				if err != nil {
-					fmt.Println(err)
-					continue
-				}
-				if windowTypeReply.Value != nil {
-					//netWmName = strings.TrimSuffix(netWmName, "\x00")
-					fmt.Println(windowTypeReply.Value)
-					fmt.Println(string(windowTypeReply.Value))
-					if len(windowTypeReply.Value) > 0 {
-						// 说明是那些透明边框,关闭
-						fmt.Println("是透明边框")
-						//xproto.UnmapWindow(X, event.Window)
-						xproto.DestroyWindow(X, event.Window)
-					}
-				}
+				//event := ev.(xproto.ConfigureNotifyEvent)
+				//wmClassCookie := xproto.GetProperty(X, false, event.Window, xproto.AtomWmClass, xproto.AtomString, 0, (1<<32)-1)
+				//wmClassReply, err := wmClassCookie.Reply()
+				//if err != nil {
+				//	// BadWindow 就别看了
+				//	//fmt.Println(err)
+				//	return
+				//}
+				//var wmClassName string
+				//if wmClassReply.Value != nil {
+				//	// 只打印一半字符串
+				//	wmClassName = string(wmClassReply.Value[:len(wmClassReply.Value)/2])
+				//	wmClassName = strings.TrimSuffix(wmClassName, "\x00")
+				//	//fmt.Println("WM_CLASS: " + wmClassName)
+				//}
+				//if wmClassName == "cloudmusic.exe" {
+				//	fmt.Println("是云音乐")
+				//	fmt.Println("WM_CLASS: " + wmClassName)
+				//	atomWindowType := registerAtom(X, "WM_HINTS")
+				//	//atomCompoundText := registerAtom(X, "COMPOUND_TEXT")
+				//	windowTypeCookie := xproto.GetProperty(X, false, event.Window, atomWindowType, xproto.AtomAny, 0, (1<<32)-1)
+				//	windowTypeReply, err := windowTypeCookie.Reply()
+				//	if err != nil {
+				//		fmt.Println(err)
+				//		continue
+				//	}
+				//	if windowTypeReply.Value != nil {
+				//		//netWmName = strings.TrimSuffix(netWmName, "\x00")
+				//		fmt.Println(windowTypeReply.Value)
+				//		fmt.Println(string(windowTypeReply.Value))
+				//		if len(windowTypeReply.Value) > 0 {
+				//			// 说明是那些透明边框,关闭
+				//			fmt.Println("是透明边框")
+				//			//xproto.UnmapWindow(X, event.Window)
+				//			//xproto.DestroyWindow(X, event.Window)
+				//		}
+				//	}
+				//}
+
 			case xproto.DestroyNotifyEvent:
 				//fmt.Println("DestroyNotifyEvent")
 			case xproto.MapRequestEvent:
@@ -86,62 +90,35 @@ func main() {
 				// 不一定有效
 				//time.Sleep(1 * time.Second)
 				event := ev.(xproto.MapNotifyEvent)
-				wmClassCookie := xproto.GetProperty(X, false, event.Window, xproto.AtomWmClass, xproto.AtomString, 0, (1<<32)-1)
-				wmClassReply, err := wmClassCookie.Reply()
-				if err != nil {
-					// BadWindow 就别看了
-					//fmt.Println(err)
-					return
-				}
-				var wmClassName string
-				if wmClassReply.Value != nil {
-					// 只打印一半字符串
-					wmClassName = string(wmClassReply.Value[:len(wmClassReply.Value)/2])
-					wmClassName = strings.TrimSuffix(wmClassName, "\x00")
-					//fmt.Println("WM_CLASS: " + wmClassName)
-				}
-				netWmNameCookie := xproto.GetProperty(X, false, event.Window, atomNetWmName, atomUtf8String, 0, (1<<32)-1)
-				netWmNameReply, err := netWmNameCookie.Reply()
+				wmClassName, err := getWmClass(X, event.Window)
 				if err != nil {
 					fmt.Println(err)
-					return
-				}
-				var netWmName string
-				if netWmNameReply.Value != nil {
-					netWmName = string(netWmNameReply.Value)
-					netWmName = strings.TrimSuffix(netWmName, "\x00")
-					//fmt.Println("_NET_WM_NAME: " + netWmName + "长度：" + strconv.Itoa(len(netWmName)))
+					continue
 				}
 				// 这里开始处理这些古怪的窗口,未来考虑拆分代码
 				if wmClassName == "wechat.exe" {
 					fmt.Println("检测到微信")
-					if len(netWmName) == 0 {
-						fmt.Println("没有名字, Unmap!")
-						xproto.UnmapWindow(X, event.Window)
-					}
+					hideByNoName(X, event.Window)
 				}
 				if wmClassName == "dingtalk.exe" {
 					fmt.Println("检测到钉钉")
-					if len(netWmName) == 0 {
-						fmt.Println("没有名字, Unmap!")
-						xproto.UnmapWindow(X, event.Window)
-					}
+					hideByNoName(X, event.Window)
 				}
-				if len(wmClassName) == 0 {
-					//fmt.Println("检测到可能是网易云音乐")
-					// 2s
-					atomWindowType := registerAtom(X, "WM_CLIENT_MACHINE")
-					windowTypeCookie := xproto.GetProperty(X, false, event.Window, atomWindowType, xproto.GetPropertyTypeAny, 0, (1<<32)-1)
-					windowTypeReply, err := windowTypeCookie.Reply()
-					if err != nil {
-						//fmt.Println(err)
-						continue
-					}
-					if windowTypeReply.Value != nil {
-						//netWmName = strings.TrimSuffix(netWmName, "\x00")
-						//fmt.Println(windowTypeReply.Value)
-					}
-				}
+				//if len(wmClassName) == 0 {
+				//	//fmt.Println("检测到可能是网易云音乐")
+				//	// 2s
+				//	atomWindowType := registerAtom(X, "WM_CLIENT_MACHINE")
+				//	windowTypeCookie := xproto.GetProperty(X, false, event.Window, atomWindowType, xproto.GetPropertyTypeAny, 0, (1<<32)-1)
+				//	windowTypeReply, err := windowTypeCookie.Reply()
+				//	if err != nil {
+				//		//fmt.Println(err)
+				//		continue
+				//	}
+				//	if windowTypeReply.Value != nil {
+				//		//netWmName = strings.TrimSuffix(netWmName, "\x00")
+				//		//fmt.Println(windowTypeReply.Value)
+				//	}
+				//}
 
 			}
 		}
@@ -151,7 +128,44 @@ func main() {
 	}
 }
 
-// hideShadow 隐藏窗口的阴影
-func hideShadow(X *xgb.Conn, win xproto.Window) {
+// hideByNoName 隐藏没有名字的窗口
+func hideByNoName(X *xgb.Conn, win xproto.Window) {
+	atomNetWmName := registerAtom(X, "_NET_WM_NAME")
+	atomUtf8String := registerAtom(X, "UTF8_STRING")
+	netWmNameCookie := xproto.GetProperty(X, false, win, atomNetWmName, atomUtf8String, 0, (1<<32)-1)
+	netWmNameReply, err := netWmNameCookie.Reply()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	var netWmName string
+	if netWmNameReply.Value != nil {
+		netWmName = string(netWmNameReply.Value)
+		netWmName = strings.TrimSuffix(netWmName, "\x00")
+		//fmt.Println("_NET_WM_NAME: " + netWmName + "长度：" + strconv.Itoa(len(netWmName)))
+	}
+	if len(netWmName) == 0 {
+		fmt.Println("没有名字, Unmap!")
+		xproto.UnmapWindow(X, win)
+	}
+}
 
+// getWmClass 获取 WM_CLASS 属性
+func getWmClass(X *xgb.Conn, win xproto.Window) (string, error) {
+	wmClassCookie := xproto.GetProperty(X, false, win, xproto.AtomWmClass, xproto.AtomString, 0, (1<<32)-1)
+	wmClassReply, err := wmClassCookie.Reply()
+	if err != nil {
+		// BadWindow 就别看了
+		//fmt.Println(err)
+		return "", err
+	}
+	var wmClassName string
+	if wmClassReply.Value != nil {
+		// 只打印一半字符串
+		wmClassName = string(wmClassReply.Value[:len(wmClassReply.Value)/2])
+		wmClassName = strings.TrimSuffix(wmClassName, "\x00")
+		//fmt.Println("WM_CLASS: " + wmClassName)
+		return wmClassName, nil
+	}
+	return "", nil
 }
