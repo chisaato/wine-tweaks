@@ -1,0 +1,78 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\FontLink\SystemLink]
+"Arial"="SourceHanSans.ttc"
+"Arial Black"="SourceHanSans.ttc"
+"Arial CE,238"="SourceHanSans.ttc"
+"Arial CYR,204"="SourceHanSans.ttc"
+"Arial Greek,161"="SourceHanSans.ttc"
+"Arial TUR,162"="SourceHanSans.ttc"
+"Courier New"="SourceHanSans.ttc"
+"Courier New CE,238"="SourceHanSans.ttc"
+"Courier New CYR,204"="SourceHanSans.ttc"
+"Courier New Greek,161"="SourceHanSans.ttc"
+"Courier New TUR,162"="SourceHanSans.ttc"
+"FixedSys"="SourceHanSans.ttc"
+"Georgia"="SourceHanSans.ttc"
+"Gulim"="SourceHanSans.ttc"
+"Helv"="SourceHanSans.ttc"
+"Helvetica"="SourceHanSans.ttc"
+"Lucida Sans Unicode"="SourceHanSans.ttc"
+"Microsoft Sans Serif"="SourceHanSans.ttc"
+"Microsoft Yahei"="SourceHanSans.ttc"
+"Microsoft Yahei Bold"="SourceHanSans.ttc"
+"MS Sans Serif"="SourceHanSans.ttc"
+"MS Shell Dlg"="SourceHanSans.ttc"
+"MS Shell Dlg 2"="SourceHanSans.ttc"
+"SimHei"="SourceHanSans.ttc"
+"SimSun"="SourceHanSans.ttc"
+"System"="SourceHanSans.ttc"
+"Tahoma"="SourceHanSans.ttc"
+"Tahoma Bold"="SourceHanSans.ttc"
+"Times"="SourceHanSans.ttc"
+"Times New Roman CE,238"="SourceHanSans.ttc"
+"Times New Roman CYR,204"="SourceHanSans.ttc"
+"Times New Roman Greek,161"="SourceHanSans.ttc"
+"Times New Roman TUR,162"="SourceHanSans.ttc"
+"Tms Rmn"="SourceHanSans.ttc"
+"Verdana"="SourceHanSans.ttc"
+
+[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+"ClientSideAntiAliasWithCore"="Y"
+"ClientSideAntiAliasWithRender"="Y"
+"ClientSideWithRender"="Y"
+
+[HKEY_CURRENT_USER\Control Panel\Desktop]
+"FontSmoothing"="2"
+"FontSmoothingType"=dword:00000002
+"FontSmoothingGamma"=dword:00000578
+"FontSmoothingOrientation"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\System\CurrentControlSet\Hardware Profiles\Current\Software\Fonts]
+"LogPixels"=dword:00000070
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes]
+; "Arial"="SimSun"
+; "Arial CE,238"="SimSun"
+; "Arial CYR,204"="SimSun"
+; "Arial Greek,161"="SimSun"
+; "Arial TUR,162"="SimSun"
+; "Courier New"="SimSun"
+; "Courier New CE,238"="SimSun"
+; "Courier New CYR,204"="SimSun"
+; "Courier New Greek,161"="SimSun"
+; "Courier New TUR,162"="SimSun"
+; "FixedSys"="SimSun"
+; "Helv"="SimSun"
+; "Helvetica"="SimSun"
+; "MS Sans Serif"="SimSun"
+; "MS Shell Dlg"="SimSun"
+; "MS Shell Dlg 2"="SimSun"
+; "System"="SimSun"
+; "Tahoma"="SimSun"
+; "Times"="SimSun"
+; "Times New Roman CE,238"="SimSun"
+; "Times New Roman CYR,204"="SimSun"
+; "Times New Roman Greek,161"="SimSun"
+; "Times New Roman TUR,162"="SimSun"
+; "Tms Rmn"="SimSun"
