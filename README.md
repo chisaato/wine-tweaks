@@ -5,6 +5,7 @@
 
 - 避免使用 Deepin 组件,如 deepinwine
 - 尽可能使用原生 Wine 或 Bottles 的 Caffe Runtime
+- 不使用 Wine 游戏助手制作的的任何管理器. 无论是 Lutris 还是 Bottles.
 
 目前解决了以下问题
 
